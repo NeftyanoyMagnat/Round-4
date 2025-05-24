@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>«Нефтяной Магнат: От скважины до рынка» - Раунд 4</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-image: url('image.png');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 20px auto;
+            border: 2px solid #2980b9;
+        }
+
+        .location {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px auto;
+            max-width: 700px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            border: 2px solid #3498db;
+        }
+
+            .location:hover {
+                background-color: rgba(255, 255, 255, 0.95);
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            }
+
+        .screen {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px auto;
+            max-width: 700px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid #2980b9;
+        }
+
+        .option {
+            background-color: rgba(234, 242, 248, 0.9);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 18px 0;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s;
+        }
+
+            .option h3 {
+                color: #2c3e50;
+                margin-top: 0;
+            }
+
+            .option ul {
+                padding-left: 20px;
+            }
+
+            .option li {
+                margin-bottom: 8px;
+                line-height: 1.5;
+            }
+
+        .next-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 15px auto 0;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+            .next-button:hover {
+                background-color: #2980b9;
+                transform: scale(1.05);
+            }
+
+        #result-content {
+            background-color: rgba(240, 240, 240, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+
+            #result-content p {
+                margin: 15px 0;
+                font-size: 18px;
+                line-height: 1.6;
+            }
+
+        .param {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+
+        .positive {
+            color: #27ae60;
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Главный экран с выбором месторождения -->
+    <div id="main-screen" class="screen">
+        <h1>Раунд 4: Переработка нефти</h1>
+        <div id="locations-container">
+            <!-- Месторождения будут добавлены через JavaScript -->
+        </div>
+    </div>
+
+    <!-- Экран с описанием месторождения и вариантами переработки -->
+    <div id="location-screen" class="screen">
+        <h1 id="location-title"></h1>
+        <p id="location-description" style="font-size: 18px; line-height: 1.6;"></p>
+        <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px;">Варианты переработки:</h3>
+        <div id="options-container">
+            <!-- Варианты будут добавлены через JavaScript -->
+        </div>
+    </div>
+
+    <!-- Экран с результатами -->
+    <div id="result-screen" class="screen">
+        <h1 style="color: #3498db;">Результаты раунда</h1>
+        <div id="result-content"></div>
+        <button class="next-button" onclick="showMainScreen()">Выбрать другое месторождение</button>
+    </div>
+
+    <script>
+        // Полные данные о всех 7 месторождениях для переработки
+        const locations = {
+            prirazlomnoye: {
+                name: "Приразломное месторождение",
+                description: "Ледяная нефть Арктики — чистая, но коварная! Без правильной переработки парафины превратят ваши трубы в сосульки.",
+                options: [
+                    {
+                        name: "Прямая перегонка",
+                        description: "Простой и дешёвый метод переработки",
+                        cost: 25,
+                        yield: {
+                            petrol: 40,
+                            diesel: 30
+                        },
+                        eco: -2,
+                        priceEffect: -10,
+                        text: "Парафины не удаляются, риск застывания в трубах"
+                    },
+                    {
+                        name: "Каталитический крекинг",
+                        description: "Современный метод с хорошим выходом продуктов",
+                        cost: 50,
+                        yield: {
+                            petrol: 55,
+                            diesel: 35
+                        },
+                        eco: 0,
+                        priceEffect: 0,
+                        text: "Разлагает парафины, соответствует стандартам ЕС"
+                    },
+                    {
+                        name: "Гидроочистка",
+                        description: "Самый передовой метод переработки",
+                        cost: 75,
+                        yield: {
+                            petrol: 60,
+                            diesel: 30
+                        },
+                        eco: 3,
+                        priceEffect: 10,
+                        text: "Полная очистка, сертификат \"Arctic Premium\""
+                    }
+                ]
+            },
+            vankorskoye: {
+                name: "Ванкорское месторождение",
+                description: "Сибирская нефть — богатство, скрытое в сероводороде. Без очистки ваше топливо никто не купит!",
+                options: [
+                    {
+                        name: "Прямая перегонка",
+                        description: "Базовый метод с низкими затратами",
+                        cost: 20,
+                        yield: {
+                            petrol: 35,
+                            diesel: 40
+                        },
+                        eco: -3,
+                        priceEffect: -30,
+                        text: "Сера остаётся, низкая цена реализации"
+                    },
+                    {
+                        name: "Гидроочистка",
+                        description: "Эффективное удаление серы",
+                        cost: 60,
+                        yield: {
+                            petrol: 50,
+                            diesel: 45
+                        },
+                        eco: 2,
+                        priceEffect: 0,
+                        text: "Удаляет 90% серы, стандартное качество"
+                    },
+                    {
+                        name: "Глубокая переработка",
+                        description: "Максимальная прибыль и экологичность",
+                        cost: 90,
+                        yield: {
+                            petrol: 60,
+                            diesel: 35
+                        },
+                        eco: 3,
+                        priceEffect: 10,
+                        text: "Нулевые выбросы серы, соответствует стандартам ЕС"
+                    }
+                ]
+            },
+            samotlorskoye: {
+                name: "Самотлорское месторождение",
+                description: "Болотная нефть Самотлора — вызов для любого нефтепереработчика! Без осушки вы получите больше воды, чем топлива.",
+                options: [
+                    {
+                        name: "Гравитационная сепарация",
+                        description: "Простой метод разделения нефти и воды",
+                        cost: 30,
+                        yield: {
+                            petrol: 30,
+                            diesel: 35
+                        },
+                        eco: -2,
+                        priceEffect: 0,
+                        text: "Загрязнённая вода остаётся, стандартное качество"
+                    },
+                    {
+                        name: "Электрообессоливание",
+                        description: "Эффективное удаление воды и солей",
+                        cost: 65,
+                        yield: {
+                            petrol: 45,
+                            diesel: 40
+                        },
+                        eco: 1,
+                        priceEffect: 0,
+                        text: "Чистая вода на выходе, стабильное качество продукции"
+                    },
+                    {
+                        name: "Термохимическая очистка",
+                        description: "Самый передовой метод обработки",
+                        cost: 95,
+                        yield: {
+                            petrol: 55,
+                            diesel: 35
+                        },
+                        eco: 3,
+                        priceEffect: 10,
+                        text: "Вода пригодна для повторного использования, премиальное качество"
+                    }
+                ]
+            },
+            romashkinskoye: {
+                name: "Ромашкинское месторождение",
+                description: "Тяжёлое наследие советской нефтянки — без современных технологий здесь не обойтись!",
+                options: [
+                    {
+                        name: "Термический крекинг",
+                        description: "Традиционный метод переработки",
+                        cost: 40,
+                        yield: {
+                            petrol: 25,
+                            diesel: 45
+                        },
+                        eco: -3,
+                        priceEffect: 0,
+                        text: "Много низкокачественного кокса, вредящего экологии"
+                    },
+                    {
+                        name: "Каталитический крекинг",
+                        description: "Современный метод с хорошим выходом",
+                        cost: 75,
+                        yield: {
+                            petrol: 50,
+                            diesel: 35
+                        },
+                        eco: 1,
+                        priceEffect: 0,
+                        text: "Полное удаление парафинов, отсутствие рисков"
+                    },
+                    {
+                        name: "Гидрокрекинг",
+                        description: "Самый эффективный и экологичный метод",
+                        cost: 110,
+                        yield: {
+                            petrol: 65,
+                            diesel: 25
+                        },
+                        eco: 3,
+                        priceEffect: 20,
+                        text: "Нулевые вредные выбросы, премиальное качество"
+                    }
+                ]
+            },
+            shtokmanovskoye: {
+                name: "Штокмановское месторождение",
+                description: "Морская нефть — чистая, но коварная. Газовые примеси требуют особого подхода!",
+                options: [
+                    {
+                        name: "Сепарация газа",
+                        description: "Базовый метод разделения компонентов",
+                        cost: 45,
+                        yield: {
+                            petrol: 50,
+                            diesel: 30
+                        },
+                        eco: -2,
+                        priceEffect: 0,
+                        text: "Потери газа, стандартное качество"
+                    },
+                    {
+                        name: "Комплексная переработка",
+                        description: "Эффективное использование всех компонентов",
+                        cost: 80,
+                        yield: {
+                            petrol: 60,
+                            diesel: 25
+                        },
+                        eco: 2,
+                        priceEffect: 0,
+                        text: "Полное использование газа, хорошее качество"
+                    },
+                    {
+                        name: "Сжижение газа",
+                        description: "Самый передовой метод переработки",
+                        cost: 120,
+                        yield: {
+                            petrol: 70,
+                            diesel: 15
+                        },
+                        eco: 3,
+                        priceEffect: 20,
+                        text: "Нулевые потери, премиальное качество"
+                    }
+                ]
+            },
+            urengoy: {
+                name: "Уренгойское месторождение",
+                description: "Газоконденсатная нефть — двойная выгода при правильной переработке!",
+                options: [
+                    {
+                        name: "Простая перегонка",
+                        description: "Традиционный метод с базовым выходом",
+                        cost: 35,
+                        yield: {
+                            petrol: 45,
+                            diesel: 35
+                        },
+                        eco: -2,
+                        priceEffect: 0,
+                        text: "Потери конденсата, стандартное качество"
+                    },
+                    {
+                        name: "Газофракционирование",
+                        description: "Эффективное разделение компонентов",
+                        cost: 70,
+                        yield: {
+                            petrol: 60,
+                            diesel: 25
+                        },
+                        eco: 2,
+                        priceEffect: 0,
+                        text: "Полное использование конденсата, хорошее качество"
+                    },
+                    {
+                        name: "Комплексный НПЗ",
+                        description: "Современный завод полного цикла",
+                        cost: 105,
+                        yield: {
+                            petrol: 75,
+                            diesel: 15
+                        },
+                        eco: 3,
+                        priceEffect: 20,
+                        text: "Замкнутый цикл, премиальное качество"
+                    }
+                ]
+            },
+            tuymazinskoye: {
+                name: "Туймазинское месторождение",
+                description: "Старая добрая нефть требует мудрого подхода к переработке!",
+                options: [
+                    {
+                        name: "Атмосферная перегонка",
+                        description: "Устаревший, но дешёвый метод",
+                        cost: 30,
+                        yield: {
+                            petrol: 40,
+                            diesel: 45
+                        },
+                        eco: -1,
+                        priceEffect: 0,
+                        text: "Устаревшее оборудование, возможны аварии"
+                    },
+                    {
+                        name: "Каталитический риформинг",
+                        description: "Современный метод улучшения качества",
+                        cost: 65,
+                        yield: {
+                            petrol: 55,
+                            diesel: 35
+                        },
+                        eco: 2,
+                        priceEffect: 0,
+                        text: "Высокое качество топлива"
+                    },
+                    {
+                        name: "Комбинированная установка",
+                        description: "Самый передовой метод переработки",
+                        cost: 95,
+                        yield: {
+                            petrol: 65,
+                            diesel: 25
+                        },
+                        eco: 3,
+                        priceEffect: 15,
+                        text: "Полное соответствие Euro-5, премиум качество"
+                    }
+                ]
+            }
+        };
+
+        // Переменные игры
+        let currentLocation = null;
+        let currentOption = null;
+        let ecoPoints = 0;
+        let money = 1000; // Начальный капитал
+
+        // Показываем главный экран при загрузке
+        window.onload = function () {
+            showMainScreen();
+        };
+
+        // Функция показа главного экрана
+        function showMainScreen() {
+            document.getElementById('main-screen').style.display = 'block';
+            document.getElementById('location-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'none';
+
+            const container = document.getElementById('locations-container');
+            container.innerHTML = '';
+
+            // Добавляем месторождения
+            for (const [key, loc] of Object.entries(locations)) {
+                const div = document.createElement('div');
+                div.className = 'location';
+                div.textContent = loc.name;
+                div.onclick = function () { selectLocation(key); };
+                container.appendChild(div);
+            }
+        }
+
+        // Выбор месторождения
+        function selectLocation(locKey) {
+            currentLocation = locations[locKey];
+
+            document.getElementById('main-screen').style.display = 'none';
+            document.getElementById('location-screen').style.display = 'block';
+
+            document.getElementById('location-title').textContent = currentLocation.name;
+            document.getElementById('location-description').textContent = currentLocation.description;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            // Добавляем варианты переработки
+            currentLocation.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+
+                const html = `
+                    <h3>Вариант ${index + 1}. ${option.name}</h3>
+                    <p>${option.description}</p>
+                    <ul>
+                        <li><span class="param">Стоимость:</span> ${option.cost} тыс. мгр</li>
+                        <li><span class="param">Выход бензина:</span> ${option.yield.petrol}%</li>
+                        <li><span class="param">Выход дизеля:</span> ${option.yield.diesel}%</li>
+                        <li><span class="param">Эко-последствия:</span> 
+                            <span class="${option.eco > 0 ? 'positive' : option.eco < 0 ? 'negative' : ''}">
+                                ${option.eco > 0 ? '+' : ''}${option.eco} эко-балла(-ов-)
+                            </span>
+                        </li>
+                        ${option.priceEffect !== 0 ? `
+                        <li><span class="param">Влияние на цену:</span> 
+                            ${option.priceEffect > 0 ? '+' : ''}${option.priceEffect}% к рыночной цене
+                        </li>` : ''}
+                    </ul>
+                    <button class="next-button">Выбрать этот вариант</button>
+                `;
+
+                div.innerHTML = html;
+                div.querySelector('.next-button').onclick = function () { selectOption(index); };
+                container.appendChild(div);
+            });
+        }
+
+        // Выбор варианта переработки
+        function selectOption(optionIndex) {
+            currentOption = currentLocation.options[optionIndex];
+
+            // Вычитаем стоимость переработки
+            money -= currentOption.cost;
+            // Добавляем эко-баллы
+            ecoPoints += currentOption.eco;
+
+            document.getElementById('location-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            // Формируем HTML для отображения результата
+            let resultHTML = `
+                <div class="result-item">
+                    <h3>${currentOption.name}</h3>
+                    <p>${currentOption.text}</p>
+                    <p><strong>Затрачено:</strong> <span class="negative">${currentOption.cost} тыс. мгр</span></p>
+                    <p><strong>Выход продукции:</strong></p>
+                    <ul>
+                        <li>Бензин: ${currentOption.yield.petrol}%</li>
+                        <li>Дизель: ${currentOption.yield.diesel}%</li>
+                    </ul>
+                    <p><strong>Изменения в эко-баллах:</strong>
+                        <span class="${currentOption.eco > 0 ? 'positive' : currentOption.eco < 0 ? 'negative' : ''}">
+                            ${currentOption.eco > 0 ? '+' : ''}${currentOption.eco}
+                        </span>
+                    </p>
+                    ${currentOption.priceEffect !== 0 ? `
+                    <p><strong>Влияние на цену:</strong>
+                        <span class="${currentOption.priceEffect > 0 ? 'positive' : 'negative'}">
+                            ${currentOption.priceEffect > 0 ? '+' : ''}${currentOption.priceEffect}%
+                        </span>
+                    </p>` : ''}
+                </div>
+            `;
+
+            document.getElementById('result-content').innerHTML = resultHTML;
+        }
+    </script>
+</body>
+</html>
