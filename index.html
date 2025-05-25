@@ -172,8 +172,8 @@
                             petrol: 40,
                             diesel: 30
                         },
-                        eco: -2,
-                        priceEffect: -10,
+                        eco: - 2,
+                        priceEffect: - 10,
                         text: "Парафины не удаляются, риск застывания в трубах"
                     },
                     {
@@ -214,8 +214,8 @@
                             petrol: 35,
                             diesel: 40
                         },
-                        eco: -3,
-                        priceEffect: -30,
+                        eco: - 3,
+                        priceEffect: - 30,
                         text: "Сера остаётся, низкая цена реализации"
                     },
                     {
@@ -256,7 +256,7 @@
                             petrol: 30,
                             diesel: 35
                         },
-                        eco: -2,
+                        eco: - 2,
                         priceEffect: 0,
                         text: "Загрязнённая вода остаётся, стандартное качество"
                     },
@@ -298,7 +298,7 @@
                             petrol: 25,
                             diesel: 45
                         },
-                        eco: -3,
+                        eco: - 3,
                         priceEffect: 0,
                         text: "Много низкокачественного кокса, вредящего экологии"
                     },
@@ -340,7 +340,7 @@
                             petrol: 50,
                             diesel: 30
                         },
-                        eco: -2,
+                        eco: - 2,
                         priceEffect: 0,
                         text: "Потери газа, стандартное качество"
                     },
@@ -382,7 +382,7 @@
                             petrol: 45,
                             diesel: 35
                         },
-                        eco: -2,
+                        eco: - 2,
                         priceEffect: 0,
                         text: "Потери конденсата, стандартное качество"
                     },
@@ -424,7 +424,7 @@
                             petrol: 40,
                             diesel: 45
                         },
-                        eco: -1,
+                        eco: - 1,
                         priceEffect: 0,
                         text: "Устаревшее оборудование, возможны аварии"
                     },
@@ -518,7 +518,7 @@
                         </li>
                         ${option.priceEffect !== 0 ? `
                         <li><span class="param">Влияние на цену:</span> 
-                            ${option.priceEffect > 0 ? '+' : ''}${option.priceEffect}% к рыночной цене
+                            ${option.priceEffect > 0 ? '+' : '-'}${Math.abs(option.priceEffect)}% ${option.priceEffect > 0 ? '(к рыночной цене)' : '(от рыночной цены)'}
                         </li>` : ''}
                     </ul>
                     <button class="next-button">Выбрать этот вариант</button>
@@ -561,7 +561,7 @@
                     ${currentOption.priceEffect !== 0 ? `
                     <p><strong>Влияние на цену:</strong>
                         <span class="${currentOption.priceEffect > 0 ? 'positive' : 'negative'}">
-                            ${currentOption.priceEffect > 0 ? '+' : ''}${currentOption.priceEffect}%
+                            ${currentOption.priceEffect > 0 ? '+' : '-'}${Math.abs(currentOption.priceEffect)}% ${currentOption.priceEffect > 0 ? '(к рыночной цене)' : '(от рыночной цены)'}
                         </span>
                     </p>` : ''}
                 </div>
